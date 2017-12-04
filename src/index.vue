@@ -1,28 +1,70 @@
 <template>
-  <div class="wrapper" @click="update">
-    <image :src="logoUrl" class="logo"></image>
-    <text class="title">Hello {{target}}</text>
-    <text class="desc">Now, let's use vue to build your weex app.</text>
-  </div>
+  <scroller class="scroller">
+    <div class="cell" v-for="num in lists">
+      <div class="panel">
+        <text class="text">{{num}}</text>
+      </div>
+    </div>
+    <loading class="loading" @loading="onloading" :display="showLoading">
+      <text class="indicator">Loading ...</text>
+    </loading>
+  </scroller>
 </template>
 
-<style>
-  .wrapper { align-items: center; margin-top: 120px; }
-  .title { padding-top:40px; padding-bottom: 40px; font-size: 48px; }
-  .logo { width: 360px; height: 156px; }
-  .desc { padding-top: 20px; color:#888; font-size: 24px;}
+
+<style scoped>
+  .panel {
+    width: 600px;
+    height: 250px;
+    margin-left: 75px;
+    margin-top: 35px;
+    margin-bottom: 35px;
+    flex-direction: column;
+    justify-content: center;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #DDDDDD;
+    background-color: #F5F5F5;
+  }
+  .text {
+    font-size: 50px;
+    text-align: center;
+    color: #41B883;
+  }
+  .loading {
+    justify-content: center;
+  }
+  .indicator {
+    color: #888888;
+    font-size: 42px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+  }
 </style>
 
 <script>
+  const modal = weex.requireModule('modal')
+  const LOADMORE_COUNT = 4
+
   export default {
-    data: {
-      logoUrl: 'http://img1.vued.vanthink.cn/vued08aa73a9ab65dcbd360ec54659ada97c.png',
-      target: 'World'
+    data () {
+      return {
+        showLoading: 'hide',
+        lists: [1, 2, 3, 4, 5]
+      }
     },
     methods: {
-      update: function (e) {
-        this.target = 'Weex'
-        console.log('target:', this.target)
+      onloading (event) {
+        modal.toast({ message: 'loading', duration: 1 })
+        this.showLoading = 'show'
+        setTimeout(() => {
+          const length = this.lists.length
+          for (let i = length; i < length + LOADMORE_COUNT; ++i) {
+            this.lists.push(i + 1)
+          }
+          this.showLoading = 'hide'
+        }, 1500)
       }
     }
   }
