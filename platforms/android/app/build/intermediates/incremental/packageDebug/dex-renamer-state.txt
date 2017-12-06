@@ -1,4 +1,4 @@
-#Mon Dec 04 18:21:10 CST 2017
+#Tue Dec 05 14:14:54 CST 2017
 base.0=/Users/zhike/Documents/Demo/Week/weexdemo/platforms/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
 renamed.0=classes.dex
 file.0=/Users/zhike/Documents/Demo/Week/weexdemo/platforms/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex

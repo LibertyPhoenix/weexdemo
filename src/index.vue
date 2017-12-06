@@ -1,71 +1,89 @@
 <template>
-  <scroller class="scroller">
-    <div class="cell" v-for="num in lists">
-      <div class="panel">
-        <text class="text">{{num}}</text>
+  <scroller>
+    <slider class="slider" interval="3000" auto-play="true">
+      <div class="frame" v-for="img in imageList">
+        <image class="image" resize="cover" :src="img.src"></image>
       </div>
-    </div>
-    <loading class="loading" @loading="onloading" :display="showLoading">
-      <text class="indicator">Loading ...</text>
-    </loading>
+    </slider>
+      <div class="frame" v-for="img in imageList">
+
+        <image class="image" resize="cover" :src="img.src"></image>
+  </div>
   </scroller>
+
 </template>
 
-
 <style scoped>
-  .panel {
-    width: 600px;
-    height: 250px;
-    margin-left: 75px;
-    margin-top: 35px;
-    margin-bottom: 35px;
-    flex-direction: column;
-    justify-content: center;
-    border-width: 2px;
-    border-style: solid;
-    border-color: #DDDDDD;
-    background-color: #F5F5F5;
-  }
-  .text {
-    font-size: 50px;
-    text-align: center;
-    color: #41B883;
-  }
-  .loading {
-    justify-content: center;
-  }
-  .indicator {
-    color: #888888;
-    font-size: 42px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    text-align: center;
-  }
+.image {
+  width: 700px;
+  height: 700px;
+}
+.slider {
+  margin-top: 25px;
+  margin-left: 25px;
+  width: 700px;
+  height: 700px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #41b883;
+}
+.frame {
+  width: 700px;
+  height: 700px;
+  position: relative;
+}
 </style>
 
 <script>
-  const modal = weex.requireModule('modal')
-  const LOADMORE_COUNT = 4
+const bannerUrl = require("../router/home").bannerUrl;
+var stream = weex.requireModule("stream");
 
-  export default {
-    data () {
-      return {
-        showLoading: 'hide',
-        lists: [1, 2, 3, 4, 5]
-      }
-    },
-    methods: {
-      onloading (event) {
-        modal.toast({ message: 'loading', duration: 1 })
-        this.showLoading = 'show'
-        setTimeout(() => {
-          const length = this.lists.length
-          for (let i = length; i < length + LOADMORE_COUNT; ++i) {
-            this.lists.push(i + 1)
-          }
-          this.showLoading = 'hide'
-        }, 1500)
-      }
+export default {
+  data() {
+    console.log(bannerUrl);
+    return {
+      imageList: [
+        {
+          src:
+            "https://gd2.alicdn.com/bao/uploaded/i2/T14H1LFwBcXXXXXXXX_!!0-item_pic.jpg"
+        },
+        {
+          src:
+            "https://gd1.alicdn.com/bao/uploaded/i1/TB1PXJCJFXXXXciXFXXXXXXXXXX_!!0-item_pic.jpg"
+        },
+        {
+          src:
+            "https://gd3.alicdn.com/bao/uploaded/i3/TB1x6hYLXXXXXazXVXXXXXXXXXX_!!0-item_pic.jpg"
+        }
+      ]
+    };
+  },
+
+  methods: {
+    getBannerData(callback) {
+      return stream.fetch(
+        {
+          method: 'GET',
+          type: 'jsonp',
+          url: bannerUrl
+        },
+        callback
+      );
     }
+  },
+
+  created: function() {
+    this.getBannerData(function(ret) {
+        if(!ret.ok){
+          me.getResult = "request failed";
+        }else{
+          console.log('get:'+ret);
+          me.getResult = JSON.stringify(ret.data);
+        }
+      },function(response){
+        console.log('get in progress:'+response.length);
+        me.getResult = "bytes received:"+response.length;
+      });
   }
+};
 </script>
